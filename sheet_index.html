@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Controls Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .controls div {
+            flex: 1;
+        }
+        .button {
+            width: 100%;
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: white;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .button.active {
+            background: #2563eb;
+            color: white;
+            transform: scale(0.95);
+        }
+        .button:hover {
+            background: #e0f2fe;
+        }
+        .button svg {
+            width: 40px;
+            height: 40px;
+        }
+        .display {
+            background: black;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+        }
+        .display div {
+            color: green;
+            font-size: 24px;
+        }
+        .circular-mark {
+            width: 64px;
+            height: 64px;
+            position: relative;
+            margin: auto;
+        }
+        .circular-mark svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Camera Controls Demonstration</h2>
+        <div class="controls">
+            <!-- Left Side Controls -->
+            <div>
+                <h3>Left Side Controls</h3>
+                <div class="button" id="L1" onclick="handleButtonPress('L1', 'Focus Mode: Focus Far <br> Zoom Mode: Zoom In')">
+                    <div>↑</div>
+                    <div>Up</div>
+                </div>
+                <div class="button" id="L2" onclick="handleButtonPress('L2', ' Switch between EO and IR Modes')">
+                    <div class="circular-mark" data-pattern="eo"></div>
+                    <div>Switch between EO/FZ/IR modes</div>
+                </div>
+                <div class="button" id="L3" onclick="handleButtonPress('L3', ' Switch between Focus and Zoom Modes')">
+                    <div class="circular-mark" data-pattern="fbz"></div>
+                    <div>Mode Selection</div>
+                </div>
+                <div class="button" id="L4" onclick="handleButtonPress('L4', 'Focus Mode: Focus Near <br> ')">
+                    <div>↓</div>
+                    <div>Down</div>
+                </div>
+            </div>
+
+            <!-- Center Display -->
+            <div class="display" id="centerDisplay">
+                <div>Camera Icon</div>
+                <div>Mode: Day</div>
+                <div>Focus: Normal</div>
+                <div>Zoom: Normal</div>
+                <div>ICR: Off</div>
+                <div>Thermal: Normal</div>
+            </div>
+
+            <!-- Right Side Controls -->
+            <div>
+                <h3>Right Side Controls</h3>
+                <div class="button" id="R1" onclick="handleButtonPress('R1', 'Long press to Power on, Long press to Power off')">
+                    <div>Power</div>
+                    <div>Power On/Off</div>
+                </div>
+                <div class="button" id="R2" onclick="handleButtonPress('R2', 'Menu, Palette')">
+                    <div>M/P</div>
+                    <div>Menu, Palette</div>
+                </div>
+                <div class="button" id="R3" onclick="handleButtonPress('R3', '(Day camera) 1st Press ICR Off, 2nd Press ICR On, 3rd Press ICR Auto')">
+                    <div class="circular-mark" data-pattern="zoom"></div>
+                    <div>Zoom Control</div>
+                </div>
+                <div class="button" id="R4" onclick="handleButtonPress('R4', 'Short Press to capture snapshot, Long press for Start/Stop Recording')">
+                    <div>- ○</div>
+                    <div>Snapshot, Long Press: Recording</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleButtonPress(buttonId, message = '') {
+            // Highlight the active button
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            const activeButton = document.getElementById(buttonId);
+            activeButton.classList.add('active');
+
+            // Update the center display message
+            const centerDisplay = document.getElementById('centerDisplay');
+            if (message) {
+                centerDisplay.innerHTML = `<div>${message}</div>`;
+            } else {
+                centerDisplay.innerHTML = `
+                    <div>Camera Icon</div>
+                    <div>Mode: Day</div>
+                    <div>Focus: Normal</div>
+                    <div>Zoom: Normal</div>
+                    <div>ICR: Off</div>
+                    <div>Thermal: Normal</div>
+                `;
+            }
+
+            // Simulate a button press effect
+            setTimeout(() => {
+                activeButton.classList.remove('active');
+            }, 500);
+        }
+
+        // Render circular marks based on pattern
+        const circularMarks = document.querySelectorAll('.circular-mark');
+        circularMarks.forEach(mark => {
+            const pattern = mark.getAttribute('data-pattern');
+            const svgContent = getSVGContent(pattern);
+            mark.innerHTML = svgContent;
+        });
+
+        function getSVGContent(pattern) {
+            switch (pattern) {
+                case 'eo':
+                    return `
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="white" stroke="#666" stroke-width="2"/>
+                            <text x="50" y="35" text-anchor="middle" font-size="14" fill="#666">EO</text>
+                            <text x="30" y="55" text-anchor="middle" font-size="14" fill="#666">FZ</text>
+                            <text x="70" y="55" text-anchor="middle" font-size="14" fill="#666">IR</text>
+                            <path d="M 50 70 A 20 20 0 1 1 50 70" fill="none" stroke="#666" stroke-width="2"/>
+                        </svg>`;
+                case 'fbz':
+                    return `
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="white" stroke="#666" stroke-width="2"/>
+                            <text x="50" y="35" text-anchor="middle" font-size="14" fill="#666">F</text>
+                            <text x="30" y="55" text-anchor="middle" font-size="14" fill="#666">B</text>
+                            <text x="70" y="55" text-anchor="middle" font-size="14" fill="#666">Z</text>
+                            <path d="M 50 70 A 20 20 0 1 1 50 70" fill="none" stroke="#666" stroke-width="2"/>
+                        </svg>`;
+                case 'zoom':
+                    return `
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="white" stroke="#666" stroke-width="2"/>
+                            <text x="35" y="50" text-anchor="middle" font-size="24" fill="#666">+</text>
+                            <text x="65" y="50" text-anchor="middle" font-size="24" fill="#666">-</text>
+                        </svg>`;
+                default:
+                    return '';
+            }
+        }
+    </script>
+</body>
+</html>
